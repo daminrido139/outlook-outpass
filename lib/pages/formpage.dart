@@ -20,6 +20,16 @@ class _FormPageState extends State<FormPage> {
   String? returnDate;
   String? purposeOfOuting;
   final now = DateTime.now();
+  final Map<String, String> outpassData = {
+    "name": "",
+    "rollno": "",
+    "outdate": "",
+    "outtime": "",
+    "returndate": "",
+    "returntime": "",
+    "pot": "",
+    "email": "",
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +38,9 @@ class _FormPageState extends State<FormPage> {
       child: Scaffold(
         backgroundColor: Colors.blueGrey.shade50,
         appBar: AppBar(
+          leading: const BackButton(
+            color: Colors.white,
+          ),
           toolbarHeight: 100,
           backgroundColor: Colors.cyan.shade900,
           title: const Text(
@@ -38,8 +51,35 @@ class _FormPageState extends State<FormPage> {
         body: Form(
           key: _formKey,
           child: ListView(
+            cacheExtent: 9999,
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 10),
             children: [
+              /////////////////////Name/////////////////////////////////
+              const Text(
+                "0. College email",
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                validator: (value) {
+                  value = value ?? "";
+                  if (value.isEmpty) return "Please enter a value";
+                  outpassData["email"] = value;
+                  return null;
+                },
+                decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    isDense: true,
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                    border: border,
+                    focusedBorder: focusedBorder,
+                    enabledBorder: border,
+                    hintText: "Enter your answer"),
+              ),
+              const SizedBox(height: 45),
+
               /////////////////////Name/////////////////////////////////
               const Text(
                 "1. Name",
@@ -50,6 +90,8 @@ class _FormPageState extends State<FormPage> {
                 validator: (value) {
                   value = value ?? "";
                   if (value.isEmpty) return "Please enter a value";
+                  outpassData["name"] = value;
+
                   return null;
                 },
                 decoration: InputDecoration(
@@ -75,6 +117,8 @@ class _FormPageState extends State<FormPage> {
                 validator: (value) {
                   value = value ?? "";
                   if (value.isEmpty) return "Please enter a value";
+                  outpassData["rollno"] = value;
+
                   return null;
                 },
                 decoration: InputDecoration(
@@ -123,6 +167,8 @@ class _FormPageState extends State<FormPage> {
                       lastDate: DateTime(now.year + 1));
                   if (pickedDate != null) {
                     outingDate = pickedDate.toString().substring(0, 10);
+                    outpassData["outdate"] = outingDate!;
+
                     setState(() {});
                   }
                 },
@@ -139,6 +185,8 @@ class _FormPageState extends State<FormPage> {
                 validator: (value) {
                   value = value ?? "";
                   if (value.isEmpty) return "Please enter a value";
+                  outpassData["outtime"] = value;
+
                   return null;
                 },
                 decoration: InputDecoration(
@@ -187,6 +235,8 @@ class _FormPageState extends State<FormPage> {
                       lastDate: DateTime(now.year + 1));
                   if (pickedDate != null) {
                     returnDate = pickedDate.toString().substring(0, 10);
+                    outpassData["returndate"] = returnDate!;
+
                     setState(() {});
                   }
                 },
@@ -203,6 +253,8 @@ class _FormPageState extends State<FormPage> {
                 validator: (value) {
                   value = value ?? "";
                   if (value.isEmpty) return "Please enter a value";
+                  outpassData["returntime"] = value;
+
                   return null;
                 },
                 decoration: InputDecoration(
@@ -230,6 +282,8 @@ class _FormPageState extends State<FormPage> {
                 onSelected: (value) {
                   if (value == null) return;
                   purposeOfOuting = value;
+                  outpassData["pot"] = value;
+
                   setState(() {});
                 },
                 dropdownMenuEntries: const <DropdownMenuEntry<String>>[
@@ -292,9 +346,8 @@ class _FormPageState extends State<FormPage> {
                     if (returnDate == null ||
                         outingDate == null ||
                         purposeOfOuting == null) return;
+                    Navigator.pop(context, outpassData);
                   }
-
-                  //TODO: push the approval page here
                 },
                 color: Colors.cyan.shade900,
                 height: 45,

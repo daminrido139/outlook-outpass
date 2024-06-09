@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:outlook/pages/formpage.dart';
 import 'package:outlook/widgets/common/get_dp.dart';
 import 'package:outlook/widgets/homepage/chat_list.dart';
 import 'package:outlook/widgets/homepage/other_email.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  List<Map<String, String>> outpassData = [];
+
+  @override
   Widget build(BuildContext context) {
-    bool doubleTapped = false;
-    bool activate = false;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -24,21 +30,15 @@ class Homepage extends StatelessWidget {
               children: [
                 const SizedBox(width: 20),
                 GestureDetector(
-                  onDoubleTap: () {
-                    doubleTapped = true;
-                    Future.delayed(const Duration(seconds: 1)).then((_) {
-                      doubleTapped = false;
-                    });
-                  },
-                  onLongPressStart: (details) {
-                    if (doubleTapped) {
-                      activate = true;
+                  onLongPressStart: (details) async {
+                    final data = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FormPage()));
+                    if (data != null) {
+                      outpassData.insert(0, data);
+                      setState(() {});
                     }
-                    print(activate);
-                    activate = false;
-                  },
-                  onLongPressUp: () {
-                    activate = false;
                   },
                   child: const GetDp(radius: 18, label: 'D'),
                 ),
@@ -152,6 +152,23 @@ class Homepage extends StatelessWidget {
               height: 0.5,
               color: const Color.fromRGBO(33, 33, 33, 1),
             ),
+            if (outpassData.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20, top: 12),
+                    child: Text(
+                      'Today',
+                      style: TextStyle(color: Color.fromRGBO(137, 137, 137, 1)),
+                    ),
+                  ),
+                  ChatList(
+                    itemCount: outpassData.length,
+                    outpassData: outpassData,
+                  ),
+                ],
+              ),
             const Padding(
               padding: EdgeInsets.only(left: 20, top: 12),
               child: Text(

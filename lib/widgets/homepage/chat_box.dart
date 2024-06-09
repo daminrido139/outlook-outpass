@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:outlook/pages/approve_page.dart';
 import 'package:outlook/widgets/common/get_dp.dart';
 
 class ChatBox extends StatelessWidget {
@@ -7,6 +8,7 @@ class ChatBox extends StatelessWidget {
   final String day;
   final String sub;
   final String sub2;
+  final Map<String, String>? outpassData;
   const ChatBox({
     super.key,
     required this.dpLabel,
@@ -14,12 +16,30 @@ class ChatBox extends StatelessWidget {
     required this.day,
     required this.sub,
     required this.sub2,
+    this.outpassData,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        if (outpassData == null) {
+          return;
+        }
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ApprovePage(
+                      username: outpassData!['name']!,
+                      rollnumber: outpassData!['rollno']!,
+                      outDate: outpassData!['outdate']!,
+                      outTime: outpassData!['outtime']!,
+                      ReturnDate: outpassData!['returndate']!,
+                      ReturnTime: outpassData!['returntime']!,
+                      email: outpassData!['email']!,
+                      purcpose_of_outing: outpassData!['pot']!,
+                    )));
+      },
       tileColor: Colors.black,
       minTileHeight: 90,
       leading: GetDp(radius: 21, label: dpLabel),
