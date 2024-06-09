@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:outlook/widgets/homepage/chat_box.dart';
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
   final int itemCount;
-  const ChatList({super.key, required this.itemCount});
+  final List<Map<String, String>>? outpassData;
+  const ChatList({super.key, required this.itemCount, this.outpassData});
 
   static List<List<String>> chatDetails = [
     [
@@ -41,19 +42,51 @@ class ChatList extends StatelessWidget {
   static Random random = Random();
 
   @override
+  State<ChatList> createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+  List<List<String>> outPassBox = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void initOutPass() {
+    if (widget.outpassData != null) {
+      outPassBox.clear();
+      for (Map<String, String> data in widget.outpassData!) {
+        List<String> outpass = [
+          'HK',
+          'Hostel KCT',
+          'Today',
+          'Outpass Request Approved - ${data['name']} 22BCD012',
+          'Dear ${data['name']} Your outing request has been approved',
+        ];
+        outPassBox.add(outpass);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    initOutPass();
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: itemCount,
+      itemCount: widget.itemCount,
       itemBuilder: (context, index) {
-        final data = chatDetails[random.nextInt(chatDetails.length)];
+        final data = ChatList
+            .chatDetails[ChatList.random.nextInt(ChatList.chatDetails.length)];
         return ChatBox(
-          dpLabel: data[0],
-          name: data[1],
-          day: data[2],
-          sub: data[3],
-          sub2: data[4],
+          dpLabel: widget.outpassData == null ? data[0] : outPassBox[index][0],
+          name: widget.outpassData == null ? data[1] : outPassBox[index][1],
+          day: widget.outpassData == null ? data[2] : outPassBox[index][2],
+          sub: widget.outpassData == null ? data[3] : outPassBox[index][3],
+          sub2: widget.outpassData == null ? data[4] : outPassBox[index][4],
+          outpassData:
+              widget.outpassData == null ? null : widget.outpassData![index],
         );
       },
     );
